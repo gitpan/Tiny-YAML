@@ -4,7 +4,7 @@ use 5.008001; # sane UTF-8 support
 use strict;
 use warnings;
 package Tiny::YAML;
-$Tiny::YAML::VERSION = '0.0.1';
+$Tiny::YAML::VERSION = '0.0.2';
 # XXX-INGY is 5.8.1 too old/broken for utf8?
 # XXX-XDG Lancaster consensus was that it was sufficient until
 # proven otherwise

@@ -27,6 +27,7 @@ inc/TestML/Library/Standard.pm
 inc/TestML/Runtime.pm
 inc/TestML/Runtime/TAP.pm
 inc/TestML/Util.pm
+inc/Text/Diff.pm
 lib/Tiny/YAML.pm
 lib/Tiny/YAML.pod
 lib/Tiny/YAML/Constructor.pm

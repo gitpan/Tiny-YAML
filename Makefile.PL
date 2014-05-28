@@ -19,11 +19,13 @@ my %WriteMakefileArgs = (
   "EXE_FILES" => [],
   "LICENSE" => "perl",
   "NAME" => "Tiny::YAML",
-  "PREREQ_PM" => {},
+  "PREREQ_PM" => {
+    "Pegex" => 0
+  },
   "TEST_REQUIRES" => {
     "YAML::XS" => 0
   },
-  "VERSION" => "0.0.1",
+  "VERSION" => "0.0.2",
   "test" => {
     "TESTS" => "t/*.t t/t/*.t t/xt/compare/*.t"
   }
@@ -31,6 +33,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Pegex" => 0,
   "YAML::XS" => 0
 );
 

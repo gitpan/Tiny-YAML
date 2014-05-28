@@ -1,6 +1,6 @@
 use strict;
 package Tiny::YAML::Constructor;
-$Tiny::YAML::Constructor::VERSION = '0.0.1';
+$Tiny::YAML::Constructor::VERSION = '0.0.2';
 use base 'Pegex::Tree';
 # use XXX -with => 'YAML::XS';
 

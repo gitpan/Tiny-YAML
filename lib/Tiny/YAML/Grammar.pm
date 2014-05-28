@@ -1,5 +1,5 @@
 package Tiny::YAML::Grammar;
-$Tiny::YAML::Grammar::VERSION = '0.0.1';
+$Tiny::YAML::Grammar::VERSION = '0.0.2';
 use base 'Pegex::Grammar';
 
 use constant file => '../yaml-pegex-pm/share/yaml.pgx';
