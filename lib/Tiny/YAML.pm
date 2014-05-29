@@ -4,7 +4,7 @@ use 5.008001; # sane UTF-8 support
 use strict;
 use warnings;
 package Tiny::YAML;
-our $VERSION = '0.0.3'; # VERSION
+our $VERSION = '0.0.4'; # VERSION
 
 # XXX-INGY is 5.8.1 too old/broken for utf8?
 # XXX-XDG Lancaster consensus was that it was sufficient until
@@ -126,12 +126,6 @@ sub load_file {
         $self->_error("Failed to open file '$file': $!");
     }
 
-    # flock if available (or warn if not possible for OS-specific reasons)
-    if ( _can_flock() ) {
-        flock( $fh, Fcntl::LOCK_SH() )
-            or warn "Couldn't lock '$file' for reading: $!";
-    }
-
     # slurp the contents
     my $contents = eval {
         use warnings FATAL => 'utf8';
@@ -217,28 +211,7 @@ sub _dump_file {
     my $file = shift or $self->_error( 'You did not specify a file name' );
 
     my $fh;
-    # flock if available (or warn if not possible for OS-specific reasons)
-    if ( _can_flock() ) {
-        # Open without truncation (truncate comes after lock)
-        my $flags = Fcntl::O_WRONLY()|Fcntl::O_CREAT();
-        sysopen( $fh, $file, $flags );
-        unless ( $fh ) {
-            $self->_error("Failed to open file '$file' for writing: $!");
-        }
-
-        # Use no translation and strict UTF-8
-        binmode( $fh, ":raw:encoding(UTF-8)");
-
-        flock( $fh, Fcntl::LOCK_EX() )
-            or warn "Couldn't lock '$file' for reading: $!";
-
-        # truncate and spew contents
-        truncate $fh, 0;
-        seek $fh, 0, 0;
-    }
-    else {
-        open $fh, ">:unix:encoding(UTF-8)", $file;
-    }
+    open $fh, ">:unix:encoding(UTF-8)", $file;
 
     # serialize and spew to the handle
     print {$fh} $self->_dump_string;
@@ -420,30 +393,13 @@ sub _dump_hash {
     @lines;
 }
 
-
-#####################################################################
-# DEPRECATED API methods:
-
-# Error storage (DEPRECATED as of 1.57)
-our $errstr    = '';
-
 # Set error
 sub _error {
     require Carp;
-    $errstr = $_[1];
+    my $errstr = $_[1];
     $errstr =~ s/ at \S+ line \d+.*//;
     Carp::croak( $errstr );
 }
-
-# Retrieve error
-my $errstr_warned;
-sub errstr {
-    require Carp;
-    Carp::carp( "Tiny::YAML->errstr and \$Tiny::YAML::errstr is deprecated" )
-        unless $errstr_warned++;
-    $errstr;
-}
-
 
 #####################################################################
 # Helper functions. Possibly not needed.
@@ -451,26 +407,6 @@ sub errstr {
 
 # Use to detect nv or iv
 use B;
-
-# XXX-INGY Is flock Tiny::YAML's responsibility?
-# Some platforms can't flock :-(
-# XXX-XDG I think it is.  When reading and writing files, we ought
-# to be locking whenever possible.  People (foolishly) use YAML
-# files for things like session storage, which has race issues.
-my $HAS_FLOCK;
-sub _can_flock {
-    if ( defined $HAS_FLOCK ) {
-        return $HAS_FLOCK;
-    }
-    else {
-        require Config;
-        my $c = \%Config::Config;
-        $HAS_FLOCK = grep { $c->{$_} } qw/d_flock d_fcntl_can_lock d_lockf/;
-        require Fcntl if $HAS_FLOCK;
-        return $HAS_FLOCK;
-    }
-}
-
 
 # XXX-INGY Is this core in 5.8.1? Can we remove this?
 # XXX-XDG Scalar::Util 1.18 didn't land until 5.8.8, so we need this

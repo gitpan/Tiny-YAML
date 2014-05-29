@@ -81,9 +81,9 @@ DESCRIPTION
     your average manager or secretary should be able to look at and make
     sense of.
 
-    Tiny::YAML <https://metacpan.org/pod/Tiny::YAML> does not generate
-    comments, it won't necessarily preserve the order of your hashes, and it
-    will normalise if reading in and writing out again.
+    Tiny::YAML does not generate comments, it won't necessarily preserve the
+    order of your hashes, and it will normalise if reading in and writing
+    out again.
 
     It only supports a very basic subset of the full YAML specification.
 
@@ -95,52 +95,64 @@ DESCRIPTION
     is refused. Someone has to draw the line, and for Tiny::YAML that
     someone is me.
 
-    If you need something with more power move up to YAML
-    <https://metacpan.org/pod/YAML> (7 megabytes of memory overhead) or
-    YAML::XS <https://metacpan.org/pod/YAML::XS> (6 megabytes memory
-    overhead and requires a C compiler).
+    If you need something with more power move up to YAML (7 megabytes of
+    memory overhead) or YAML::XS (6 megabytes memory overhead and requires a
+    C compiler).
 
-    To restate, Tiny::YAML <https://metacpan.org/pod/Tiny::YAML> does *not*
-    preserve your comments, whitespace, or the order of your YAML data. But
-    it should round-trip from Perl structure to file and back again just
-    fine.
+    To restate, Tiny::YAML does *not* preserve your comments, whitespace, or
+    the order of your YAML data. But it should round-trip from Perl
+    structure to file and back again just fine.
 
 FUNCTIONS
     Tiny::YAML implements a number of functions to add compatibility with
-    the YAML <https://metacpan.org/pod/YAML> API. These should be a drop-in
-    replacement.
+    the YAML API. These should be a drop-in replacement.
 
-    Data
-        Dumper::Dumper().
+    "Dump"
+            my $string = Dump(list-of-Perl-data-structures);
 
-        "Dump" my $string = Dump(list-of-Perl-data-structures); Turn Perl
-        data into YAML. This function works very much like It takes a list
-        of Perl data structures and dumps them into a serialized form. It
-        returns a character string containing the YAML stream. Be sure to
-        encode it as UTF-8 before serializing to a file or socket. The
-        structures can be references or plain scalars. Dies on any error.
+        Turn Perl data into YAML. This function works very much like
+        Data::Dumper::Dumper().
 
-    [Data
-        Dumper"<https://metacpan.org/pod/Data::Dumper>.
+        It takes a list of Perl data structures and dumps them into a
+        serialized form.
 
-        "Load" my @data_structures = Load(string-containing-a-YAML-stream);
-        Turn YAML into Perl data. This is the opposite of Dump. Just like
-        Storable <https://metacpan.org/pod/Storable>'s thaw() function or
-        the eval() function in relation to It parses a character string
-        containing a valid YAML stream into a list of Perl data structures
-        representing the individual YAML documents. Be sure to decode the
-        character string correctly if the string came from a file or socket.
-        my $last_data_structure = Load(string-containing-a-YAML-stream); For
-        consistency with YAML.pm, when Load is called in scalar context, it
-        returns the data structure corresponding to the last of the YAML
-        documents found in the input stream. Dies on any error.
+        It returns a character string containing the YAML stream. Be sure to
+        encode it as UTF-8 before serializing to a file or socket.
+
+        The structures can be references or plain scalars.
+
+        Dies on any error.
+
+    "Load"
+            my @data_structures = Load(string-containing-a-YAML-stream);
+
+        Turn YAML into Perl data. This is the opposite of Dump.
+
+        Just like Storable's thaw() function or the eval() function in
+        relation to Data::Dumper.
+
+        It parses a character string containing a valid YAML stream into a
+        list of Perl data structures representing the individual YAML
+        documents. Be sure to decode the character string correctly if the
+        string came from a file or socket.
+
+            my $last_data_structure = Load(string-containing-a-YAML-stream);
+
+        For consistency with YAML.pm, when Load is called in scalar context,
+        it returns the data structure corresponding to the last of the YAML
+        documents found in the input stream.
+
+        Dies on any error.
 
     "DumpFile(filepath, list)"
         Writes the YAML stream to a file with UTF-8 encoding instead of just
-        returning a string. Dies on any error.
+        returning a string.
+
+        Dies on any error.
 
     "LoadFile(filepath)"
         Reads the YAML stream from a UTF-8 encoded file instead of a string.
+
         Dies on any error.
 
 TINY YAML SPECIFICATION
@@ -209,16 +221,22 @@ TINY YAML SPECIFICATION
   3. Processing Tiny YAML Information
     Processes
         The YAML specification dictates three-phase serialization and
-        three-phase deserialization. The Tiny YAML specification does not
-        mandate any particular methodology or mechanism for parsing. Any
-        compliant parser is only required to parse a single document at a
-        time. The ability to support streaming documents is optional and
-        most likely non-typical. Because anchors and aliases are not
-        supported, the resulting representation graph is thus directed but
-        (unlike the main YAML specification) *acyclic*. Circular
-        references/pointers are not possible, and any Tiny YAML serializer
-        detecting a circular reference should error with an appropriate
-        message.
+        three-phase deserialization.
+
+        The Tiny YAML specification does not mandate any particular
+        methodology or mechanism for parsing.
+
+        Any compliant parser is only required to parse a single document at
+        a time. The ability to support streaming documents is optional and
+        most likely non-typical.
+
+        Because anchors and aliases are not supported, the resulting
+        representation graph is thus directed but (unlike the main YAML
+        specification) *acyclic*.
+
+        Circular references/pointers are not possible, and any Tiny YAML
+        serializer detecting a circular reference should error with an
+        appropriate message.
 
     Presentation Stream
         Tiny YAML reads and write UTF-8 encoded files. Operations on strings
@@ -233,33 +251,58 @@ TINY YAML SPECIFICATION
   4. Syntax
     Character Set
         Tiny YAML streams are processed in memory as Unicode characters and
-        read/written with UTF-8 encoding. The escaping and unescaping of the
-        8-bit YAML escapes is required. The escaping and unescaping of
-        16-bit and 32-bit YAML escapes is not required.
+        read/written with UTF-8 encoding.
+
+        The escaping and unescaping of the 8-bit YAML escapes is required.
+
+        The escaping and unescaping of 16-bit and 32-bit YAML escapes is not
+        required.
 
     Indicator Characters
         Support for the "~" null/undefined indicator is required.
+
         Implementations may represent this as appropriate for the underlying
-        language. Support for the "-" block sequence indicator is required.
-        Support for the "?" mapping key indicator is *not* required. Support
-        for the ":" mapping value indicator is required. Support for the ","
-        flow collection indicator is *not* required. Support for the "["
-        flow sequence indicator is *not* required, with one exception
-        (detailed below). Support for the "]" flow sequence indicator is
-        *not* required, with one exception (detailed below). Support for the
-        "{" flow mapping indicator is *not* required, with one exception
-        (detailed below). Support for the "}" flow mapping indicator is
-        *not* required, with one exception (detailed below). Support for the
-        "#" comment indicator is required. Support for the "&" anchor
-        indicator is *not* required. Support for the "*" alias indicator is
-        *not* required. Support for the "!" tag indicator is *not* required.
-        Support for the "|" literal block indicator is required. Support for
-        the ">" folded block indicator is required. Support for the "'"
-        single quote indicator is required. Support for the """ double quote
-        indicator is required. Support for the "%" directive indicator is
-        required, but only for the special case of a %YAML version directive
-        before the "---" document header, or on the same line as the
-        document header.
+        language.
+
+        Support for the "-" block sequence indicator is required.
+
+        Support for the "?" mapping key indicator is *not* required.
+
+        Support for the ":" mapping value indicator is required.
+
+        Support for the "," flow collection indicator is *not* required.
+
+        Support for the "[" flow sequence indicator is *not* required, with
+        one exception (detailed below).
+
+        Support for the "]" flow sequence indicator is *not* required, with
+        one exception (detailed below).
+
+        Support for the "{" flow mapping indicator is *not* required, with
+        one exception (detailed below).
+
+        Support for the "}" flow mapping indicator is *not* required, with
+        one exception (detailed below).
+
+        Support for the "#" comment indicator is required.
+
+        Support for the "&" anchor indicator is *not* required.
+
+        Support for the "*" alias indicator is *not* required.
+
+        Support for the "!" tag indicator is *not* required.
+
+        Support for the "|" literal block indicator is required.
+
+        Support for the ">" folded block indicator is required.
+
+        Support for the "'" single quote indicator is required.
+
+        Support for the """ double quote indicator is required.
+
+        Support for the "%" directive indicator is required, but only for
+        the special case of a %YAML version directive before the "---"
+        document header, or on the same line as the document header.
 
     For example:
 
@@ -413,18 +456,11 @@ AUTHOR
     Ingy döt Net <ingy@cpan.org>
 
 SEE ALSO
-    "YAML
-        Tiny"<https://metacpan.org/pod/YAML::Tiny>
-
-    YAML <https://metacpan.org/pod/YAML>
-    "YAML
-        Syck"<https://metacpan.org/pod/YAML::Syck>
-
-    "Config
-        Tiny"<https://metacpan.org/pod/Config::Tiny>
-
-    "CSS
-        Tiny"<https://metacpan.org/pod/CSS::Tiny>
+    YAML::Tiny
+    YAML
+    YAML::Syck
+    Config::Tiny
+    CSS::Tiny
 
 COPYRIGHT
     Copyright 2014 Ingy döt Net
