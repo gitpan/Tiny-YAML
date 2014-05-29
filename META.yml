@@ -13,6 +13,11 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: '1.4'
 name: Tiny-YAML
+no_index:
+  directory:
+    - inc
+    - t
+    - xt
 requires:
   Pegex: '0'
   perl: v5.8.1
@@ -20,4 +25,4 @@ resources:
   bugtracker: https://github.com/ingydotnet/tiny-yaml-pm/issues
   homepage: https://github.com/ingydotnet/tiny-yaml-pm
   repository: https://github.com/ingydotnet/tiny-yaml-pm.git
-version: 0.0.2
+version: 0.0.3
