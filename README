@@ -2,8 +2,8 @@ NAME
     Tiny::YAML - YAML::Tiny Done Right
 
 PREAMBLE
-    Don't even look at this yet. It's just 0.0.1 and will be bootstrapping
-    for a while.
+    Don't even look at this yet. It's a super early release and will be
+    bootstrapping for a while.
 
     This module uses a real grammar to parse/load YAML.
 
@@ -25,23 +25,23 @@ SYNOPSIS
     Read and write "file.yaml" like this:
 
         use Tiny::YAML;
-    
+
         # Open the config
         my $data = Tiny::YAML::LoadFile( 'file.yaml' );
-    
+
         # Get a reference to the first document
         my $config = $data->[0];
-    
+
         # Or read properties directly
         my $root = $data->[0]->{rootproperty};
         my $one  = $data->[0]->{section}->{one};
         my $Foo  = $data->[0]->{section}->{Foo};
-    
+
         # Change data directly
         $data->[0]->{newsection} = { this => 'that' }; # Add a section
         $data->[0]->{section}->{Foo} = 'Not Bar!';     # Change a value
         delete $data->[0]->{section};                  # Delete a value
-    
+
         # Save the document back to the file
         Tiny::YAML::DumpFile( 'file.yaml' );
 
@@ -49,10 +49,10 @@ SYNOPSIS
 
         # Create a new object with a single hashref document
         my $data = Dump( { wibble => "wobble" } );
-    
+
         # Add an arrayref document
         push @$data, [ 'foo', 'bar', 'baz' ];
-    
+
         # Save both documents to a file
         $data->( 'data.yaml' );
 
@@ -356,11 +356,11 @@ TINY YAML SPECIFICATION
 
         --- #YAML:1.0
         - foo
-    
+
         %YAML:1.0
         ---
         - foo
-    
+
         % YAML 1.1
         ---
         - foo
@@ -386,7 +386,7 @@ TINY YAML SPECIFICATION
         %YAML 1.1
         ---
         foo: bar
-    
+
         # Implicit form
         foo: bar
 

@@ -1,11 +1,8 @@
-# ABSTRACT: YAML::Tiny Done Right
-
 use 5.008001; # sane UTF-8 support
 use strict;
 use warnings;
 package Tiny::YAML;
-our $VERSION = '0.0.4'; # VERSION
-
+$Tiny::YAML::VERSION = '0.0.5';
 # XXX-INGY is 5.8.1 too old/broken for utf8?
 # XXX-XDG Lancaster consensus was that it was sufficient until
 # proven otherwise
@@ -443,7 +440,8 @@ END_PERL
 #use Pegex::Optimizer;           #INLINE
 BEGIN{$INC{'Pegex/Optimizer.pm'} = 'INLINE/Pegex/Optimizer.pm'}
 package Pegex::Optimizer;
-$Pegex::Optimizer::VERSION = '0.30';
+$Pegex::Optimizer::VERSION = '0.0.5';
+$Pegex::Optimizer::VERSION = '0.31';
 use Pegex::Base;
 
 has parser => (required => 1);
@@ -505,7 +503,8 @@ sub optimize_node {
 #use Pegex::Grammar;             #INLINE
 BEGIN{$INC{'Pegex/Grammar.pm'} = 'INLINE/Pegex/Grammar.pm'}
 package Pegex::Grammar;
-$Pegex::Grammar::VERSION = '0.30';
+$Pegex::Grammar::VERSION = '0.0.5';
+$Pegex::Grammar::VERSION = '0.31';
 use Pegex::Base;
 
 # Grammar can be in text or tree form. Tree will be compiled from text.
@@ -608,7 +607,8 @@ sub compile_into_module {
 #use Pegex::Tree;                #INLINE
 BEGIN{$INC{'Pegex/Tree.pm'} = 'INLINE/Pegex/Tree.pm'}
 package Pegex::Tree;
-$Pegex::Tree::VERSION = '0.30';
+$Pegex::Tree::VERSION = '0.0.5';
+$Pegex::Tree::VERSION = '0.31';
 use Pegex::Base;
 extends 'Pegex::Receiver';
 
@@ -630,7 +630,8 @@ sub final {
 #use Pegex::Parser;              #INLINE
 BEGIN{$INC{'Pegex/Parser.pm'} = 'INLINE/Pegex/Parser.pm'}
 package Pegex::Parser;
-$Pegex::Parser::VERSION = '0.30';
+$Pegex::Parser::VERSION = '0.0.5';
+$Pegex::Parser::VERSION = '0.31';
 use Pegex::Base;
 use Pegex::Input;
 use Pegex::Optimizer;
@@ -638,7 +639,8 @@ use Scalar::Util;
 
 {
     package Pegex::Constant;
-$Pegex::Constant::VERSION = '0.30';
+$Pegex::Constant::VERSION = '0.0.5';
+$Pegex::Constant::VERSION = '0.31';
 our $Null = [];
     our $Dummy = [];
 }
@@ -672,7 +674,7 @@ sub parse {
     $self->{position} = 0;
     $self->{farthest} = 0;
 
-    if (not UNIVERSAL::isa($input, 'Pegex::Input')) {
+    if (not ref $input or not UNIVERSAL::isa($input, 'Pegex::Input')) {
         $input = Pegex::Input->new(string => $input);
     }
     $self->{input} = $input;
@@ -904,6 +906,7 @@ Error parsing Pegex document:
 #use Tiny::YAML::Grammar;        #INLINE
 BEGIN{$INC{'Tiny/YAML/Grammar.pm'} = 'INLINE/Tiny/YAML/Grammar.pm'}
 package Tiny::YAML::Grammar;
+$Tiny::YAML::Grammar::VERSION = '0.0.5';
 
 use base 'Pegex::Grammar';
 
@@ -1278,7 +1281,7 @@ sub make_tree {
 BEGIN{$INC{'Tiny/YAML/Constructor.pm'} = 'INLINE/Tiny/YAML/Constructor.pm'}
 use strict;
 package Tiny::YAML::Constructor;
-
+$Tiny::YAML::Constructor::VERSION = '0.0.5';
 use base 'Pegex::Tree';
 # use XXX -with => 'YAML::XS';
 
