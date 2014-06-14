@@ -12,8 +12,6 @@ Tiny::YAML - YAML::Tiny Done Right
 
 =for html
 <a href="https://travis-ci.org/ingydotnet/tiny-yaml-pm"><img src="https://travis-ci.org/ingydotnet/tiny-yaml-pm.png" alt="tiny-yaml-pm"></a>
-
-=for html
 <a href="https://coveralls.io/r/ingydotnet/tiny-yaml-pm?branch=master"><img src="https://coveralls.io/repos/ingydotnet/tiny-yaml-pm/badge.png" alt="tiny-yaml-pm"></a>
 
 =head1 PREAMBLE
