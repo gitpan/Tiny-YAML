@@ -1,6 +1,6 @@
 use strict; use warnings;
 package Tiny::YAML;
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 #####################################################################
 # The Tiny::YAML API.
@@ -422,12 +422,14 @@ END_PERL
 # For Tiny::YAML we want one simple file. These `INLINE`s get inlined before
 # going to CPAN. We want to optimize this section over time. It gives us
 # something *very* specific to optimize.
-no strict;
+
+no strict;  # Needed for Pegex::Base to compile.
 #use Pegex::Base();              #INLINE
 BEGIN { $INC{'Pegex/Base.pm'} = 'INLINE/Pegex/Base.pm' }
 BEGIN {
 #line 1 "Pegex::Base"
-package Pegex::Base;
+package
+Pegex::Base;
 # use Mo qw'build default builder xxx import nonlazy';
 #   The following line of code was produced from the previous line by
 #   Mo::Inline version 0.38
@@ -435,11 +437,13 @@ no warnings;my$M=__PACKAGE__.'::';*{$M.Object::new}=sub{my$c=shift;my$s=bless{@_
 
 our $DumpModule = 'YAML';
 }
+use strict;
 #use Pegex::Optimizer;           #INLINE
 BEGIN { $INC{'Pegex/Optimizer.pm'} = 'INLINE/Pegex/Optimizer.pm' }
 BEGIN {
 #line 1 "Pegex::Optimizer"
-package Pegex::Optimizer;
+package
+Pegex::Optimizer;
 use Pegex::Base;
 
 has parser => (required => 1);
@@ -579,7 +583,8 @@ sub set_max_parse {
 BEGIN { $INC{'Pegex/Grammar.pm'} = 'INLINE/Pegex/Grammar.pm' }
 BEGIN {
 #line 1 "Pegex::Grammar"
-package Pegex::Grammar;
+package
+Pegex::Grammar;
 use Pegex::Base;
 
 # Grammar can be in text or tree form. Tree will be compiled from text.
@@ -683,7 +688,8 @@ sub compile_into_module {
 BEGIN { $INC{'Pegex/Tree.pm'} = 'INLINE/Pegex/Tree.pm' }
 BEGIN {
 #line 1 "Pegex::Tree"
-package Pegex::Tree;
+package
+Pegex::Tree;
 use Pegex::Base;
 extends 'Pegex::Receiver';
 
@@ -705,7 +711,8 @@ sub final {
 BEGIN { $INC{'Pegex/Input.pm'} = 'INLINE/Pegex/Input.pm' }
 BEGIN {
 #line 1 "Pegex::Input"
-package Pegex::Input;
+package
+Pegex::Input;
 
 use Pegex::Base;
 
@@ -772,7 +779,8 @@ sub close {
 BEGIN { $INC{'Pegex/Parser.pm'} = 'INLINE/Pegex/Parser.pm' }
 BEGIN {
 #line 1 "Pegex::Parser"
-package Pegex::Parser;
+package
+Pegex::Parser;
 use Pegex::Base;
 
 use Pegex::Input;
@@ -780,7 +788,8 @@ use Pegex::Optimizer;
 use Scalar::Util;
 
 {
-    package Pegex::Constant;
+    package
+Pegex::Constant;
     our $Null = [];
     our $Dummy = [];
 }
@@ -1047,12 +1056,15 @@ Error parsing Pegex document:
 ...
 }
 }
-#use YAML::Pegex::Grammar;       #INLINE
+#use YAML::Pegex::Grammar 0.0.8; #INLINE
 BEGIN { $INC{'YAML/Pegex/Grammar.pm'} = 'INLINE/YAML/Pegex/Grammar.pm' }
 BEGIN {
 #line 1 "YAML::Pegex::Grammar"
 use strict; use warnings;
-package YAML::Pegex::Grammar;
+package
+YAML::Pegex::Grammar;
+our $VERSION = '0.0.8';
+
 use Pegex::Base;
 extends 'Pegex::Grammar';
 
@@ -1092,7 +1104,7 @@ sub rule_block_undent {
     return unless @$indents;
     my $len = $indents->[-1];
     pos($$buffer) = $pos;
-    if ($$buffer =~ /\G((?:\r?\n)?)\z/ or
+    if ($$buffer =~ /\G((?:\r?\n)?)(?=\z|\.\.\.\r?\n|\-\-\-\r?\n)/ or
         $$buffer !~ /\G\r?\n( {$len})/g
     ) {
         pop @$indents;
@@ -1116,14 +1128,11 @@ sub make_tree {
     'EOL' => {
       '.rgx' => qr/\G\r?\n/
     },
-    'EOS' => {
-      '.rgx' => qr/\G\z/
-    },
     'SPACE' => {
       '.rgx' => qr/\G\ /
     },
     'block_key' => {
-      '.ref' => 'block_scalar'
+      '.rgx' => qr/\G(\|\r?\nXXX|\>\r?\nXXX|"[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`\@]).+?(?=:\s|\r?\n|\z)):(?:\ +|\ *(?=\r?\n))/
     },
     'block_mapping' => {
       '.all' => [
@@ -1148,15 +1157,9 @@ sub make_tree {
           '.ref' => 'block_key'
         },
         {
-          '.ref' => 'block_mapping_separator'
-        },
-        {
           '.ref' => 'block_value'
         }
       ]
-    },
-    'block_mapping_separator' => {
-      '.rgx' => qr/\G:(?:\ +|\ *(?=\r?\n))/
     },
     'block_node' => {
       '.any' => [
@@ -1401,15 +1404,8 @@ sub make_tree {
           ]
         },
         {
-          '.all' => [
-            {
-              '+max' => 1,
-              '.ref' => 'EOL'
-            },
-            {
-              '.ref' => 'EOS'
-            }
-          ]
+          '+max' => 1,
+          '.ref' => 'EOL'
         }
       ]
     },
@@ -1460,7 +1456,8 @@ BEGIN { $INC{'Tiny/YAML/Constructor.pm'} = 'INLINE/Tiny/YAML/Constructor.pm' }
 BEGIN {
 #line 1 "Tiny::YAML::Constructor"
 use strict; use warnings;
-package Tiny::YAML::Constructor;
+package
+Tiny::YAML::Constructor;
 use Pegex::Base;
 extends 'Pegex::Tree';
 
