@@ -1,12 +1,6 @@
-use 5.008001; # sane UTF-8 support
-use strict;
-use warnings;
+use strict; use warnings;
 package Tiny::YAML;
-$Tiny::YAML::VERSION = '0.0.6';
-# XXX-INGY is 5.8.1 too old/broken for utf8?
-# XXX-XDG Lancaster consensus was that it was sufficient until
-# proven otherwise
-
+our $VERSION = '0.0.7';
 
 #####################################################################
 # The Tiny::YAML API.
@@ -21,9 +15,6 @@ our @EXPORT_OK = qw{ LoadFile DumpFile };
 ###
 # Functional/Export API:
 
-# XXX-INGY Returning last document seems a bad behavior.
-# XXX-XDG I think first would seem more natural, but I don't know
-# that it's worth changing now
 sub Load {
     my @data = Tiny::YAML->New->load(@_);
     wantarray ? @data : $data[0];
@@ -145,32 +136,31 @@ sub load_file {
 sub load {
     my $self = shift;
     my $string = $_[0];
-#     eval {
-        unless ( defined $string ) {
-            die \"Did not provide a string to load";
-        }
+    unless ( defined $string ) {
+        die \"Did not provide a string to load";
+    }
 
-        # Check if Perl has it marked as characters, but it's internally
-        # inconsistent.  E.g. maybe latin1 got read on a :utf8 layer
-        if ( utf8::is_utf8($string) && ! utf8::valid($string) ) {
-            die \<<'...';
+    # Check if Perl has it marked as characters, but it's internally
+    # inconsistent.  E.g. maybe latin1 got read on a :utf8 layer
+    if ( utf8::is_utf8($string) && ! utf8::valid($string) ) {
+        die \<<'...';
 Read an invalid UTF-8 string (maybe mixed UTF-8 and 8-bit character set).
 Did you decode with lax ":utf8" instead of strict ":encoding(UTF-8)"?
 ...
-        }
+    }
 
-        # Ensure Unicode character semantics, even for 0x80-0xff
-        utf8::upgrade($string);
+    # Ensure Unicode character semantics, even for 0x80-0xff
+    utf8::upgrade($string);
 
-        # Check for and strip any leading UTF-8 BOM
-        $string =~ s/^\x{FEFF}//;
+    # Check for and strip any leading UTF-8 BOM
+    $string =~ s/^\x{FEFF}//;
 
-        return + Pegex::Parser->new(
-            grammar => 'Tiny::YAML::Grammar'->new,
-            receiver => 'Tiny::YAML::Constructor'->new,
-            # debug => 1,
-        )->parse($string);
-#     };
+    return + Pegex::Parser->new(
+        grammar => 'YAML::Pegex::Grammar'->new,
+        receiver => 'Tiny::YAML::Constructor'->new,
+        # debug => 1,
+    )->parse($string);
+
     if ( ref $@ eq 'SCALAR' ) {
         $self->_error(${$@});
     } elsif ( $@ ) {
@@ -401,15 +391,10 @@ sub _error {
 #####################################################################
 # Helper functions. Possibly not needed.
 
-
 # Use to detect nv or iv
 use B;
 
-# XXX-INGY Is this core in 5.8.1? Can we remove this?
-# XXX-XDG Scalar::Util 1.18 didn't land until 5.8.8, so we need this
-#####################################################################
 # Use Scalar::Util if possible, otherwise emulate it
-
 BEGIN {
     local $@;
     if ( eval { require Scalar::Util; Scalar::Util->VERSION(1.18); } ) {
@@ -437,11 +422,24 @@ END_PERL
 # For Tiny::YAML we want one simple file. These `INLINE`s get inlined before
 # going to CPAN. We want to optimize this section over time. It gives us
 # something *very* specific to optimize.
+no strict;
+#use Pegex::Base();              #INLINE
+BEGIN { $INC{'Pegex/Base.pm'} = 'INLINE/Pegex/Base.pm' }
+BEGIN {
+#line 1 "Pegex::Base"
+package Pegex::Base;
+# use Mo qw'build default builder xxx import nonlazy';
+#   The following line of code was produced from the previous line by
+#   Mo::Inline version 0.38
+no warnings;my$M=__PACKAGE__.'::';*{$M.Object::new}=sub{my$c=shift;my$s=bless{@_},$c;my%n=%{$c.::.':E'};map{$s->{$_}=$n{$_}->()if!exists$s->{$_}}keys%n;$s};*{$M.import}=sub{import warnings;$^H|=1538;my($P,%e,%o)=caller.'::';shift;eval"no Mo::$_",&{$M.$_.::e}($P,\%e,\%o,\@_)for@_;return if$e{M};%e=(extends,sub{eval"no $_[0]()";@{$P.ISA}=$_[0]},has,sub{my$n=shift;my$m=sub{$#_?$_[0]{$n}=$_[1]:$_[0]{$n}};@_=(default,@_)if!($#_%2);$m=$o{$_}->($m,$n,@_)for sort keys%o;*{$P.$n}=$m},%e,);*{$P.$_}=$e{$_}for keys%e;@{$P.ISA}=$M.Object};*{$M.'build::e'}=sub{my($P,$e)=@_;$e->{new}=sub{$c=shift;my$s=&{$M.Object::new}($c,@_);my@B;do{@B=($c.::BUILD,@B)}while($c)=@{$c.::ISA};exists&$_&&&$_($s)for@B;$s}};*{$M.'default::e'}=sub{my($P,$e,$o)=@_;$o->{default}=sub{my($m,$n,%a)=@_;exists$a{default}or return$m;my($d,$r)=$a{default};my$g='HASH'eq($r=ref$d)?sub{+{%$d}}:'ARRAY'eq$r?sub{[@$d]}:'CODE'eq$r?$d:sub{$d};my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=$g and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$g->(@_):$m->(@_)}}};*{$M.'builder::e'}=sub{my($P,$e,$o)=@_;$o->{builder}=sub{my($m,$n,%a)=@_;my$b=$a{builder}or return$m;my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=\&{$P.$b}and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$_[0]->$b:$m->(@_)}}};use constant XXX_skip=>1;my$dm='YAML::XS';*{$M.'xxx::e'}=sub{my($P,$e)=@_;$e->{WWW}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::WWW(@_)};$e->{XXX}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::XXX(@_)};$e->{YYY}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::YYY(@_)};$e->{ZZZ}=sub{require XXX;local$XXX::DumpModule=$dm}};my$i=\&import;*{$M.import}=sub{(@_==2 and not$_[1])?pop@_:@_==1?push@_,grep!/import/,@f:();goto&$i};*{$M.'nonlazy::e'}=sub{${shift.':N'}=1};@f=qw[build default builder xxx import nonlazy];use strict;use warnings;
+
+our $DumpModule = 'YAML';
+}
 #use Pegex::Optimizer;           #INLINE
-BEGIN{$INC{'Pegex/Optimizer.pm'} = 'INLINE/Pegex/Optimizer.pm'}
+BEGIN { $INC{'Pegex/Optimizer.pm'} = 'INLINE/Pegex/Optimizer.pm' }
+BEGIN {
+#line 1 "Pegex::Optimizer"
 package Pegex::Optimizer;
-$Pegex::Optimizer::VERSION = '0.0.6';
-$Pegex::Optimizer::VERSION = '0.31';
 use Pegex::Base;
 
 has parser => (required => 1);
@@ -450,13 +448,20 @@ has receiver => (required => 1);
 
 sub optimize_grammar {
     my ($self, $start) = @_;
-    return if $self->grammar->tree->{optimized};
-    while (my ($name, $node) = each %{$self->grammar->{tree}}) {
+    my $tree = $self->grammar->{tree};
+    return if $tree->{'+optimized'};
+    $self->set_max_parse if $self->parser->{maxparse};
+    $self->{extra} = {};
+    while (my ($name, $node) = each %$tree) {
         next unless ref($node);
         $self->optimize_node($node);
     }
     $self->optimize_node({'.ref' => $start});
-    $self->{optimized} = 1;
+    my $extra = delete $self->{extra};
+    for my $key (%$extra) {
+        $tree->{$key} = $extra->{$key};
+    }
+    $tree->{'+optimized'} = 1;
 }
 
 sub optimize_node {
@@ -471,10 +476,29 @@ sub optimize_node {
         unless defined $node->{'+asr'};
 
     for my $kind (qw(ref rgx all any err code xxx)) {
-        die if $kind eq 'xxx';
+        return if $kind eq 'xxx';
         if ($node->{rule} = $node->{".$kind"}) {
+            delete $node->{".$kind"};
             $node->{kind} = $kind;
-            $node->{method} = $self->parser->can("match_$kind") or die;
+            if ($kind eq 'ref') {
+                my $rule = $node->{rule} or die;
+                if (my $method = $self->grammar->can("rule_$rule")) {
+                    $node->{method} = $self->make_method_wrapper($method);
+                }
+                elsif (not $self->grammar->{tree}{$rule}) {
+                    if (my $method = $self->grammar->can("$rule")) {
+                        warn <<"...";
+Warning:
+
+    You have a method called '$rule' in your grammar.
+    It should probably be called 'rule_$rule'.
+
+...
+                    }
+                    die "No rule '$rule' defined in grammar";
+                }
+            }
+            $node->{method} ||= $self->parser->can("match_$kind") or die;
             last;
         }
     }
@@ -485,26 +509,77 @@ sub optimize_node {
     elsif ($node->{kind} eq 'ref') {
         my $ref = $node->{rule};
         my $rule = $self->grammar->{tree}{$ref};
+        $rule ||= $self->{extra}{$ref} = {};
         if (my $action = $self->receiver->can("got_$ref")) {
             $rule->{action} = $action;
         }
         elsif (my $gotrule = $self->receiver->can("gotrule")) {
             $rule->{action} = $gotrule;
         }
-        $node->{method} = $self->parser->can("match_ref_trace")
-            if $self->parser->{debug};
+        if ($self->parser->{debug}) {
+            $node->{method} = $self->make_trace_wrapper($node->{method});
+        }
     }
     elsif ($node->{kind} eq 'rgx') {
       # XXX $node;
     }
 }
 
-1;
+sub make_method_wrapper {
+    my ($self, $method) = @_;
+    return sub {
+        my ($parser, $ref, $parent) = @_;
+        @{$parser}{'rule', 'parent'} = ($ref, $parent);
+        $method->(
+            $parser->{grammar},
+            $parser,
+            $parser->{buffer},
+            $parser->{position},
+        );
+    }
+}
+
+sub make_trace_wrapper {
+    my ($self, $method) = @_;
+    return sub {
+        my ($self, $ref, $parent) = @_;
+        my $asr = $parent->{'+asr'};
+        my $note =
+            $asr == -1 ? '(!)' :
+            $asr == 1 ? '(=)' :
+            '';
+        $self->trace("try_$ref$note");
+        my $result;
+        if ($result = $self->$method($ref, $parent)) {
+            $self->trace("got_$ref$note");
+        }
+        else {
+            $self->trace("not_$ref$note");
+        }
+        return $result;
+    }
+}
+
+sub set_max_parse {
+    require Pegex::Parser;
+    my ($self) = @_;
+    my $maxparse = $self->parser->{maxparse};
+    no warnings 'redefine';
+    my $method = \&Pegex::Parser::match_ref;
+    my $counter = 0;
+    *Pegex::Parser::match_ref = sub {
+        die "Maximum parsing rules reached ($maxparse)\n"
+            if $counter++ >= $maxparse;
+        my $self = shift;
+        $self->$method(@_);
+    };
+}
+}
 #use Pegex::Grammar;             #INLINE
-BEGIN{$INC{'Pegex/Grammar.pm'} = 'INLINE/Pegex/Grammar.pm'}
+BEGIN { $INC{'Pegex/Grammar.pm'} = 'INLINE/Pegex/Grammar.pm' }
+BEGIN {
+#line 1 "Pegex::Grammar"
 package Pegex::Grammar;
-$Pegex::Grammar::VERSION = '0.0.6';
-$Pegex::Grammar::VERSION = '0.31';
 use Pegex::Base;
 
 # Grammar can be in text or tree form. Tree will be compiled from text.
@@ -601,14 +676,14 @@ sub compile_into_module {
     open OUT, '>', $file or die $!;
     print OUT $module_text;
     close OUT;
+    print "Compiled '$grammar_file' into '$file'.\n";
 }
-
-1;
+}
 #use Pegex::Tree;                #INLINE
-BEGIN{$INC{'Pegex/Tree.pm'} = 'INLINE/Pegex/Tree.pm'}
+BEGIN { $INC{'Pegex/Tree.pm'} = 'INLINE/Pegex/Tree.pm' }
+BEGIN {
+#line 1 "Pegex::Tree"
 package Pegex::Tree;
-$Pegex::Tree::VERSION = '0.0.6';
-$Pegex::Tree::VERSION = '0.31';
 use Pegex::Base;
 extends 'Pegex::Receiver';
 
@@ -625,23 +700,88 @@ sub final {
     return(shift) if @_;
     return [];
 }
+}
+#use Pegex::Input;               #INLINE
+BEGIN { $INC{'Pegex/Input.pm'} = 'INLINE/Pegex/Input.pm' }
+BEGIN {
+#line 1 "Pegex::Input"
+package Pegex::Input;
 
-1;
-#use Pegex::Parser;              #INLINE
-BEGIN{$INC{'Pegex/Parser.pm'} = 'INLINE/Pegex/Parser.pm'}
-package Pegex::Parser;
-$Pegex::Parser::VERSION = '0.0.6';
-$Pegex::Parser::VERSION = '0.31';
 use Pegex::Base;
+
+has string => ();
+has stringref => ();
+has file => ();
+has handle => ();
+has _buffer => ();
+has _is_eof => 0;
+has _is_open => 0;
+has _is_close => 0;
+
+# NOTE: Current implementation reads entire input into _buffer on open().
+sub read {
+    my ($self) = @_;
+    die "Attempted Pegex::Input::read before open" if not $self->{_is_open};
+    die "Attempted Pegex::Input::read after EOF" if $self->{_is_eof};
+
+    my $buffer = $self->{_buffer};
+    $self->{_buffer} = undef;
+    $self->{_is_eof} = 1;
+
+    return $buffer;
+}
+
+sub open {
+    my ($self) = @_;
+    die "Attempted to reopen Pegex::Input object"
+        if $self->{_is_open} or $self->{_is_close};
+
+    if (my $ref = $self->{stringref}) {
+        $self->{_buffer} = $ref;
+    }
+    elsif (my $handle = $self->{handle}) {
+        $self->{_buffer} = \ do { local $/; <$handle> };
+    }
+    elsif (my $path = $self->{file}) {
+        open my $handle, $path
+            or die "Pegex::Input can't open $path for input:\n$!";
+        $self->{_buffer} = \ do { local $/; <$handle> };
+    }
+    elsif (exists $self->{string}) {
+        $self->{_buffer} = \$self->{string};
+    }
+    else {
+        die "Pegex::Input::open failed. No source to open";
+    }
+    $self->{_is_open} = 1;
+    return $self;
+}
+
+sub close {
+    my ($self) = @_;
+    die "Attempted to close an unopen Pegex::Input object"
+        if $self->{_is_close};
+    close $self->{handle} if $self->{handle};
+    $self->{_is_open} = 0;
+    $self->{_is_close} = 1;
+    $self->{_buffer} = undef;
+    return $self;
+}
+}
+#use Pegex::Parser;              #INLINE
+BEGIN { $INC{'Pegex/Parser.pm'} = 'INLINE/Pegex/Parser.pm' }
+BEGIN {
+#line 1 "Pegex::Parser"
+package Pegex::Parser;
+use Pegex::Base;
+
 use Pegex::Input;
 use Pegex::Optimizer;
 use Scalar::Util;
 
 {
     package Pegex::Constant;
-$Pegex::Constant::VERSION = '0.0.6';
-$Pegex::Constant::VERSION = '0.31';
-our $Null = [];
+    our $Null = [];
     our $Dummy = [];
 }
 
@@ -665,6 +805,10 @@ has farthest => 0;
 has throw_on_error => 1;
 
 sub parse {
+    # XXX Add an optional $position argument. Default to 0. This is the
+    # position to start parsing. Set position and farthest below to this
+    # value. Allows for sub-parsing. Need to somehow return the finishing
+    # position of a subparse. Maybe this all goes in a subparse() method.
     my ($self, $input, $start) = @_;
 
     if ($start) {
@@ -694,11 +838,12 @@ sub parse {
 
     die "No 'receiver'. Can't parse" unless $self->{receiver};
 
-    Pegex::Optimizer->new(
+    $self->{optimizer} = Pegex::Optimizer->new(
         parser => $self,
         grammar => $self->{grammar},
         receiver => $self->{receiver},
-    )->optimize_grammar($start_rule_ref);
+    );
+    $self->{optimizer}->optimize_grammar($start_rule_ref);
 
     # Add circular ref and weaken it.
     $self->{receiver}{parser} = $self;
@@ -710,7 +855,10 @@ sub parse {
         $self->{receiver}->initial();
     }
 
-    my $match = $self->match_ref($start_rule_ref, {});
+    my $match = $self->debug ? do {
+        my $method = $self->{optimizer}->make_trace_wrapper(\&match_ref);
+        $self->$method($start_rule_ref, {'+asr' => 0});
+    } : $self->match_ref($start_rule_ref, {});
 
     $self->{input}->close;
 
@@ -768,14 +916,29 @@ sub match_next {
     return ($result ? $next->{'-skip'} ? [] : $match : 0);
 }
 
+sub match_rule {
+    my ($self, $position, $match) = (@_, []);
+    $self->{position} = $position;
+    $self->{farthest} = $self->{position}
+        if $self->{position} > $self->{farthest};
+    $match = [ $match ] if @$match > 1;
+    my ($ref, $parent) = @{$self}{'rule', 'parent'};
+    my $rule = $self->{grammar}{tree}{$ref}
+        or die "No rule defined for '$ref'";
+
+    [ $rule->{action}->($self->{receiver}, @$match) ];
+}
+
 sub match_ref {
     my ($self, $ref, $parent) = @_;
     my $rule = $self->{grammar}{tree}{$ref}
         or die "No rule defined for '$ref'";
-    my $match = $self->match_next($rule) or return 0;
+    my $match = $self->match_next($rule) or return;
     return $Pegex::Constant::Dummy unless $rule->{action};
     @{$self}{'rule', 'parent'} = ($ref, $parent);
-    # XXX API mismatch
+
+    # XXX Possible API mismatch.
+    # Not sure if we should "splat" the $match.
     [ $rule->{action}->($self->{receiver}, @$match) ];
 }
 
@@ -785,7 +948,7 @@ sub match_rgx {
 
     pos($$buffer) = $self->{position};
 
-    $$buffer =~ /$regexp/g or return 0;
+    $$buffer =~ /$regexp/g or return;
     $self->{position} = pos($$buffer);
 
     no strict 'refs';
@@ -811,7 +974,7 @@ sub match_all {
         else {
             $self->{farthest} = $position
                 if ($self->{position} = $position) > $self->{farthest};
-            return 0;
+            return;
         }
     }
     $set = [ $set ] if $len > 1;
@@ -825,30 +988,12 @@ sub match_any {
             return $match;
         }
     }
-    return 0;
+    return;
 }
 
 sub match_err {
     my ($self, $error) = @_;
     $self->throw_error($error);
-}
-
-sub match_ref_trace {
-    my ($self, $ref, $parent) = @_;
-    my $asr = $parent->{'+asr'};
-    my $note =
-        $asr == -1 ? '(!)' :
-        $asr == 1 ? '(=)' :
-        '';
-    $self->trace("try_$ref$note");
-    my $result;
-    if ($result = $self->match_ref($ref)) {
-        $self->trace("got_$ref$note");
-    }
-    else {
-        $self->trace("not_$ref$note");
-    }
-    return $result;
 }
 
 sub trace {
@@ -901,17 +1046,68 @@ Error parsing Pegex document:
   position: $position ($real_pos pre-lookahead)
 ...
 }
+}
+#use YAML::Pegex::Grammar;       #INLINE
+BEGIN { $INC{'YAML/Pegex/Grammar.pm'} = 'INLINE/YAML/Pegex/Grammar.pm' }
+BEGIN {
+#line 1 "YAML::Pegex::Grammar"
+use strict; use warnings;
+package YAML::Pegex::Grammar;
+use Pegex::Base;
+extends 'Pegex::Grammar';
 
-1;
-#use Tiny::YAML::Grammar;        #INLINE
-BEGIN{$INC{'Tiny/YAML/Grammar.pm'} = 'INLINE/Tiny/YAML/Grammar.pm'}
-package Tiny::YAML::Grammar;
-$Tiny::YAML::Grammar::VERSION = '0.0.6';
+use constant file => '../yaml-pgx/yaml.pgx';
 
-use base 'Pegex::Grammar';
+has indent => [];
 
-use constant file => '../yaml-pegex-pm/share/yaml.pgx';
+sub rule_block_indent {
+    my ($self, $parser, $buffer, $pos) = @_;
+    my $indents = $self->{indent};
+    pos($$buffer) = $pos;
+    return if $pos >= length($$buffer);
+    if ($pos == 0) {
+        $$buffer =~ /\G( *)(?=[^\s\#])/g or die;
+        push @$indents, length($1);
+        return $parser->match_rule($pos);
+    }
+    my $len = @$indents ? $indents->[-1] + 1 : 0;
+    $$buffer =~ /\G\r?\n( {$len,})(?=[^\s\#])/g or return;
+    push @$indents, length($1);
+    return $parser->match_rule($pos);
+}
 
+sub rule_block_ondent {
+    my ($self, $parser, $buffer, $pos) = @_;
+    my $indents = $self->{indent};
+    my $len = $indents->[-1];
+    my $re = $pos > 0 ? '\r?\n' : '';
+    pos($$buffer) = $pos;
+    $$buffer =~ /\G$re( {$len})(?=[^\s\#])/g or return;
+    return $parser->match_rule(pos($$buffer));
+}
+
+sub rule_block_undent {
+    my ($self, $parser, $buffer, $pos) = @_;
+    my $indents = $self->{indent};
+    return unless @$indents;
+    my $len = $indents->[-1];
+    pos($$buffer) = $pos;
+    if ($$buffer =~ /\G((?:\r?\n)?)\z/ or
+        $$buffer !~ /\G\r?\n( {$len})/g
+    ) {
+        pop @$indents;
+        return $parser->match_rule($pos);
+    }
+    return;
+}
+
+# sub make_tree {
+#     use Pegex::Bootstrap;
+#     use IO::All;
+#     my $grammar = io->file(file)->all;
+#     Pegex::Bootstrap->new->compile($grammar)->tree;
+# }
+# sub make_treeXXX {
 sub make_tree {
   {
     '+grammar' => 'yaml',
@@ -920,11 +1116,11 @@ sub make_tree {
     'EOL' => {
       '.rgx' => qr/\G\r?\n/
     },
+    'EOS' => {
+      '.rgx' => qr/\G\z/
+    },
     'SPACE' => {
       '.rgx' => qr/\G\ /
-    },
-    'block_indent' => {
-      '.rgx' => qr/\G/
     },
     'block_key' => {
       '.ref' => 'block_scalar'
@@ -935,33 +1131,11 @@ sub make_tree {
           '.ref' => 'block_indent'
         },
         {
-          '.all' => [
-            {
-              '.ref' => 'block_mapping_pair'
-            },
-            {
-              '+min' => 0,
-              '-flat' => 1,
-              '.all' => [
-                {
-                  '.ref' => 'ignore_line'
-                },
-                {
-                  '.ref' => 'block_mapping_pair'
-                }
-              ]
-            }
-          ]
+          '+min' => 1,
+          '.ref' => 'block_mapping_pair'
         },
         {
-          '.all' => [
-            {
-              '.ref' => 'EOL'
-            },
-            {
-              '.ref' => 'block_undent'
-            }
-          ]
+          '.ref' => 'block_undent'
         }
       ]
     },
@@ -974,55 +1148,49 @@ sub make_tree {
           '.ref' => 'block_key'
         },
         {
-          '.ref' => 'mapping_separator'
+          '.ref' => 'block_mapping_separator'
         },
         {
           '.ref' => 'block_value'
         }
       ]
     },
-    'block_ondent' => {
-      '.rgx' => qr/\G/
+    'block_mapping_separator' => {
+      '.rgx' => qr/\G:(?:\ +|\ *(?=\r?\n))/
     },
-    'block_scalar' => {
-      '.rgx' => qr/\G(\|\r?\nXXX|\>\r?\nXXX|"[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`]).+?(?=:\ |\r?\n|\z))/
-    },
-    'block_sequence' => {
-      '.all' => [
+    'block_node' => {
+      '.any' => [
         {
-          '.ref' => 'block_sequence_entry'
+          '.ref' => 'block_sequence'
         },
         {
-          '+min' => 0,
-          '-flat' => 1,
-          '.all' => [
-            {
-              '.ref' => 'list_separator'
-            },
-            {
-              '.ref' => 'block_sequence_entry'
-            }
-          ]
+          '.ref' => 'block_mapping'
         },
         {
-          '+max' => 1,
-          '.ref' => 'list_separator'
+          '.ref' => 'block_scalar'
         }
       ]
     },
-    'block_sequence_entry' => {
-      '.rgx' => qr/\G\-\ +(\|\r?\nXXX|\>\r?\nXXX|"[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`]).+?(?=:\ |\r?\n|\z))\r?\n/
+    'block_scalar' => {
+      '.rgx' => qr/\G(\|\r?\nXXX|\>\r?\nXXX|"[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`\@]).+?(?=:\s|\r?\n|\z))/
     },
-    'block_undent' => {
-      '.rgx' => qr/\G/
+    'block_sequence' => {
+      '+min' => 1,
+      '.ref' => 'block_sequence_entry'
+    },
+    'block_sequence_entry' => {
+      '.rgx' => qr/\G\-\ +(\|\r?\nXXX|\>\r?\nXXX|"[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`\@]).+?(?=:\s|\r?\n|\z))\r?\n/
     },
     'block_value' => {
       '.any' => [
         {
-          '.ref' => 'block_scalar'
+          '.ref' => 'flow_mapping'
         },
         {
-          '.ref' => 'flow_node'
+          '.ref' => 'flow_sequence'
+        },
+        {
+          '.ref' => 'block_node'
         }
       ]
     },
@@ -1075,12 +1243,15 @@ sub make_tree {
           '.ref' => 'flow_node'
         },
         {
-          '.ref' => 'mapping_separator'
+          '.ref' => 'flow_mapping_separator'
         },
         {
           '.ref' => 'flow_node'
         }
       ]
+    },
+    'flow_mapping_separator' => {
+      '.rgx' => qr/\G:(?:\ +|\ *(?=\r?\n))/
     },
     'flow_mapping_start' => {
       '.rgx' => qr/\G\s*\{\s*/
@@ -1099,7 +1270,7 @@ sub make_tree {
       ]
     },
     'flow_scalar' => {
-      '.rgx' => qr/\G("[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`]).+?(?=[&\*\#\{\}\[\]%,]|:\ |,\ |\r?\n|\z))/
+      '.rgx' => qr/\G("[^"]*"|'[^']*'|(?![&\*\#\{\}\[\]%`\@]).+?(?=[&\*\#\{\}\[\]%,]|:\ |,\ |\r?\n|\z))/
     },
     'flow_sequence' => {
       '.all' => [
@@ -1145,13 +1316,10 @@ sub make_tree {
       '.rgx' => qr/\G\s*\[\s*/
     },
     'ignore_line' => {
-      '.rgx' => qr/\G(?:[\ \t]*|\#.*)\r?\n/
+      '.rgx' => qr/\G(?:\#.*|[\ \t]*)(?=\r?\n)/
     },
     'list_separator' => {
       '.rgx' => qr/\G,\ +/
-    },
-    'mapping_separator' => {
-      '.rgx' => qr/\G:\ +/
     },
     'node_alias' => {
       '.rgx' => qr/\G\*(\w+)/
@@ -1231,6 +1399,17 @@ sub make_tree {
               '.ref' => 'block_scalar'
             }
           ]
+        },
+        {
+          '.all' => [
+            {
+              '+max' => 1,
+              '.ref' => 'EOL'
+            },
+            {
+              '.ref' => 'EOS'
+            }
+          ]
         }
       ]
     },
@@ -1275,15 +1454,15 @@ sub make_tree {
     }
   }
 }
-
-1;
+}
 #use Tiny::YAML::Constructor;    #INLINE
-BEGIN{$INC{'Tiny/YAML/Constructor.pm'} = 'INLINE/Tiny/YAML/Constructor.pm'}
-use strict;
+BEGIN { $INC{'Tiny/YAML/Constructor.pm'} = 'INLINE/Tiny/YAML/Constructor.pm' }
+BEGIN {
+#line 1 "Tiny::YAML::Constructor"
+use strict; use warnings;
 package Tiny::YAML::Constructor;
-$Tiny::YAML::Constructor::VERSION = '0.0.6';
-use base 'Pegex::Tree';
-# use XXX -with => 'YAML::XS';
+use Pegex::Base;
+extends 'Pegex::Tree';
 
 sub init {
     my ($self) = @_;
@@ -1298,9 +1477,11 @@ sub final {
 
 sub got_block_mapping {
     my ($self, $got) = @_;
-    my $key = $got->[0][0][0];
-    my $value = $got->[0][0][1];
-    return {$key, $value};
+    return +{
+        map {
+            @$_
+        } @{$got->[0]}
+    };
 }
 
 sub got_yaml_document {
@@ -1308,7 +1489,6 @@ sub got_yaml_document {
     push @{$self->{data}}, $got->[0][0];
     return;
 }
-
-1;
+}
 
 1;

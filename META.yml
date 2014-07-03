@@ -2,8 +2,7 @@
 abstract: 'YAML::Tiny Done Right'
 author:
   - 'Ingy döt Net <ingy@cpan.org>'
-build_requires:
-  YAML::XS: '0'
+build_requires: {}
 configure_requires:
   ExtUtils::MakeMaker: '6.30'
 dynamic_config: 0
@@ -18,11 +17,11 @@ no_index:
     - inc
     - t
     - xt
+    - example
 requires:
-  Pegex: '0'
   perl: v5.8.1
 resources:
   bugtracker: https://github.com/ingydotnet/tiny-yaml-pm/issues
   homepage: https://github.com/ingydotnet/tiny-yaml-pm
   repository: https://github.com/ingydotnet/tiny-yaml-pm.git
-version: 0.0.6
+version: 0.0.7

@@ -1,3 +1,8 @@
+0.0.7 Wed Jul  2 20:05:43 PDT 2014
+ - Support indentation in Pegex grammar!
+ - No dependencies on Pegex or YAML::XS now.
+ - Fix inlining.
+
 0.0.6 Sat Jun 14 12:29:16 PDT 2014
  - New badge syntax
 
