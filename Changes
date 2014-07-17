@@ -1,3 +1,6 @@
+0.0.9 Wed Jul 16 23:11:53 PDT 2014
+ - Fix Meta and add Contributing file
+
 0.0.8 Wed Jul  2 20:05:43 PDT 2014
  - Add footer support.
  - Fix inlining to split package line for no-indexing (issue#4)
