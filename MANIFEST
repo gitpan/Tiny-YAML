@@ -9,7 +9,6 @@ Makefile.PL
 README
 lib/Tiny/YAML.pm
 lib/Tiny/YAML.pod
-t/000-compile-modules.t
 t/load.t
 t/release-pod-syntax.t
 xt/xt/compare/roundtrip.t
