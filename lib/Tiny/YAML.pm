@@ -1,6 +1,6 @@
 use strict; use warnings;
 package Tiny::YAML;
-our $VERSION = '0.0.9';
+our $VERSION = '0.0.10';
 
 #####################################################################
 # The Tiny::YAML API.
@@ -430,10 +430,10 @@ BEGIN {
 #line 1 "Pegex::Base"
 package
 Pegex::Base;
-# use Mo qw'build default builder xxx import nonlazy';
+# use Mo qw'build default builder xxx import nonlazy required';
 #   The following line of code was produced from the previous line by
 #   Mo::Inline version 0.38
-no warnings;my$M=__PACKAGE__.'::';*{$M.Object::new}=sub{my$c=shift;my$s=bless{@_},$c;my%n=%{$c.::.':E'};map{$s->{$_}=$n{$_}->()if!exists$s->{$_}}keys%n;$s};*{$M.import}=sub{import warnings;$^H|=1538;my($P,%e,%o)=caller.'::';shift;eval"no Mo::$_",&{$M.$_.::e}($P,\%e,\%o,\@_)for@_;return if$e{M};%e=(extends,sub{eval"no $_[0]()";@{$P.ISA}=$_[0]},has,sub{my$n=shift;my$m=sub{$#_?$_[0]{$n}=$_[1]:$_[0]{$n}};@_=(default,@_)if!($#_%2);$m=$o{$_}->($m,$n,@_)for sort keys%o;*{$P.$n}=$m},%e,);*{$P.$_}=$e{$_}for keys%e;@{$P.ISA}=$M.Object};*{$M.'build::e'}=sub{my($P,$e)=@_;$e->{new}=sub{$c=shift;my$s=&{$M.Object::new}($c,@_);my@B;do{@B=($c.::BUILD,@B)}while($c)=@{$c.::ISA};exists&$_&&&$_($s)for@B;$s}};*{$M.'default::e'}=sub{my($P,$e,$o)=@_;$o->{default}=sub{my($m,$n,%a)=@_;exists$a{default}or return$m;my($d,$r)=$a{default};my$g='HASH'eq($r=ref$d)?sub{+{%$d}}:'ARRAY'eq$r?sub{[@$d]}:'CODE'eq$r?$d:sub{$d};my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=$g and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$g->(@_):$m->(@_)}}};*{$M.'builder::e'}=sub{my($P,$e,$o)=@_;$o->{builder}=sub{my($m,$n,%a)=@_;my$b=$a{builder}or return$m;my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=\&{$P.$b}and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$_[0]->$b:$m->(@_)}}};use constant XXX_skip=>1;my$dm='YAML::XS';*{$M.'xxx::e'}=sub{my($P,$e)=@_;$e->{WWW}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::WWW(@_)};$e->{XXX}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::XXX(@_)};$e->{YYY}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::YYY(@_)};$e->{ZZZ}=sub{require XXX;local$XXX::DumpModule=$dm}};my$i=\&import;*{$M.import}=sub{(@_==2 and not$_[1])?pop@_:@_==1?push@_,grep!/import/,@f:();goto&$i};*{$M.'nonlazy::e'}=sub{${shift.':N'}=1};@f=qw[build default builder xxx import nonlazy];use strict;use warnings;
+no warnings;my$M=__PACKAGE__.'::';*{$M.Object::new}=sub{my$c=shift;my$s=bless{@_},$c;my%n=%{$c.'::'.':E'};map{$s->{$_}=$n{$_}->()if!exists$s->{$_}}keys%n;$s};*{$M.import}=sub{import warnings;$^H|=1538;my($P,%e,%o)=caller.'::';shift;eval"no Mo::$_",&{$M.$_.::e}($P,\%e,\%o,\@_)for@_;return if$e{M};%e=(extends,sub{eval"no $_[0]()";@{$P.ISA}=$_[0]},has,sub{my$n=shift;my$m=sub{$#_?$_[0]{$n}=$_[1]:$_[0]{$n}};@_=(default,@_)if!($#_%2);$m=$o{$_}->($m,$n,@_)for sort keys%o;*{$P.$n}=$m},%e,);*{$P.$_}=$e{$_}for keys%e;@{$P.ISA}=$M.Object};*{$M.'build::e'}=sub{my($P,$e)=@_;$e->{new}=sub{$c=shift;my$s=&{$M.Object::new}($c,@_);my@B;do{@B=($c.::BUILD,@B)}while($c)=@{$c.::ISA};exists&$_&&&$_($s)for@B;$s}};*{$M.'default::e'}=sub{my($P,$e,$o)=@_;$o->{default}=sub{my($m,$n,%a)=@_;exists$a{default}or return$m;my($d,$r)=$a{default};my$g='HASH'eq($r=ref$d)?sub{+{%$d}}:'ARRAY'eq$r?sub{[@$d]}:'CODE'eq$r?$d:sub{$d};my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=$g and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$g->(@_):$m->(@_)}}};*{$M.'builder::e'}=sub{my($P,$e,$o)=@_;$o->{builder}=sub{my($m,$n,%a)=@_;my$b=$a{builder}or return$m;my$i=exists$a{lazy}?$a{lazy}:!${$P.':N'};$i or ${$P.':E'}{$n}=\&{$P.$b}and return$m;sub{$#_?$m->(@_):!exists$_[0]{$n}?$_[0]{$n}=$_[0]->$b:$m->(@_)}}};use constant XXX_skip=>1;my$dm='YAML::XS';*{$M.'xxx::e'}=sub{my($P,$e)=@_;$e->{WWW}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::WWW(@_)};$e->{XXX}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::XXX(@_)};$e->{YYY}=sub{require XXX;local$XXX::DumpModule=$dm;XXX::YYY(@_)};$e->{ZZZ}=sub{require XXX;local$XXX::DumpModule=$dm}};my$i=\&import;*{$M.import}=sub{(@_==2 and not$_[1])?pop@_:@_==1?push@_,grep!/import/,@f:();goto&$i};*{$M.'nonlazy::e'}=sub{${shift.':N'}=1};*{$M.'required::e'}=sub{my($P,$e,$o)=@_;$o->{required}=sub{my($m,$n,%a)=@_;if($a{required}){my$C=*{$P."new"}{CODE}||*{$M.Object::new}{CODE};no warnings 'redefine';*{$P."new"}=sub{my$s=$C->(@_);my%a=@_[1..$#_];die$n." required"if!exists$a{$n};$s}}$m}};@f=qw[build default builder xxx import nonlazy required];use strict;use warnings;
 
 our $DumpModule = 'YAML';
 }
@@ -675,9 +675,17 @@ sub compile_into_module {
     }
     open IN, $file or die $!;
     my $module_text = do {local $/; <IN>};
+    require Pegex;
+    my $msg = "   # Generated/Inlined by Pegex::Grammar ($Pegex::VERSION)";
     close IN;
     $perl =~ s/^/  /gm;
-    $module_text =~ s/^(sub\s+make_tree\s*\{).*?(^\})/$1\n$perl$2/ms;
+    $module_text =~ s/^(sub\s+make_tree\s*\{).*?(^\})/$1$msg\n$perl$2/ms;
+    $module_text =~ s/^(sub\s+tree\s*\{).*?(^\})/$1$msg\n$perl$2/ms;
+    chomp $grammar_text;
+    $grammar_text = "<<'...';\n$grammar_text\n...\n";
+    $module_text =~ s/^(sub\s+text\s*\{).*?(^\})/$1$msg\n$grammar_text$2/ms;
+    $grammar_text =~ s/^/# /gm;
+    $module_text =~ s/^(# sub\s+text\s*\{).*?(^# \})/$1$msg\n$grammar_text$2/ms;
     open OUT, '>', $file or die $!;
     print OUT $module_text;
     close OUT;
@@ -787,72 +795,64 @@ use Pegex::Input;
 use Pegex::Optimizer;
 use Scalar::Util;
 
-{
-    package
-Pegex::Constant;
-    our $Null = [];
-    our $Dummy = [];
-}
-
 has grammar => (required => 1);
 has receiver => ();
 has input => ();
-
-has rule => ();
-has parent => ();
-has 'debug' => (
-    default => sub {
-        exists($ENV{PERL_PEGEX_DEBUG}) ? $ENV{PERL_PEGEX_DEBUG} :
-        defined($Pegex::Parser::Debug) ? $Pegex::Parser::Debug :
-        0;
-    },
+has debug => (
+    exists($ENV{PERL_PEGEX_DEBUG}) ? $ENV{PERL_PEGEX_DEBUG} :
+    defined($Pegex::Parser::Debug) ? $Pegex::Parser::Debug :
+    0
 );
+sub BUILD {
+    my ($self) = @_;
+    $self->{throw_on_error} ||= 1;
+    # $self->{rule} = undef;
+    # $self->{parent} = undef;
+    # $self->{error} = undef;
+    # $self->{position} = undef;
+    # $self->{farthest} = undef;
+}
 
-has position => 0;
-has farthest => 0;
-
-has throw_on_error => 1;
-
+# XXX Add an optional $position argument. Default to 0. This is the position
+# to start parsing. Set position and farthest below to this value. Allows for
+# sub-parsing. Need to somehow return the finishing position of a subparse.
+# Maybe this all goes in a subparse() method.
 sub parse {
-    # XXX Add an optional $position argument. Default to 0. This is the
-    # position to start parsing. Set position and farthest below to this
-    # value. Allows for sub-parsing. Need to somehow return the finishing
-    # position of a subparse. Maybe this all goes in a subparse() method.
     my ($self, $input, $start) = @_;
 
-    if ($start) {
-        $start =~ s/-/_/g;
-    }
+    $start =~ s/-/_/g if $start;
 
     $self->{position} = 0;
     $self->{farthest} = 0;
 
-    if (not ref $input or not UNIVERSAL::isa($input, 'Pegex::Input')) {
-        $input = Pegex::Input->new(string => $input);
-    }
-    $self->{input} = $input;
-    $self->{input}->open unless $self->{input}{_is_open};
+    $self->{input} = (not ref $input)
+      ? Pegex::Input->new(string => $input)
+      : $input;
+
+    $self->{input}->open
+        unless $self->{input}{_is_open};
     $self->{buffer} = $self->{input}->read;
-    $self->{length} = length ${$self->{buffer}};
 
-    die "No 'grammar'. Can't parse" unless $self->{grammar};
+    die "No 'grammar'. Can't parse"
+        unless $self->{grammar};
 
-    $self->{grammar}{tree} = $self->{grammar}->make_tree
-        unless defined $self->{grammar}{tree};
+    $self->{grammar}{tree} ||= $self->{grammar}->make_tree;
 
     my $start_rule_ref = $start ||
         $self->{grammar}{tree}{'+toprule'} ||
-        ($self->{grammar}{tree}{'TOP'} ? 'TOP' : undef)
-            or die "No starting rule for Pegex::Parser::parse";
+        $self->{grammar}{tree}{'TOP'} & 'TOP' or
+        die "No starting rule for Pegex::Parser::parse";
 
-    die "No 'receiver'. Can't parse" unless $self->{receiver};
+    die "No 'receiver'. Can't parse"
+        unless $self->{receiver};
 
-    $self->{optimizer} = Pegex::Optimizer->new(
+    my $optimizer = Pegex::Optimizer->new(
         parser => $self,
         grammar => $self->{grammar},
         receiver => $self->{receiver},
     );
-    $self->{optimizer}->optimize_grammar($start_rule_ref);
+
+    $optimizer->optimize_grammar($start_rule_ref);
 
     # Add circular ref and weaken it.
     $self->{receiver}{parser} = $self;
@@ -865,13 +865,13 @@ sub parse {
     }
 
     my $match = $self->debug ? do {
-        my $method = $self->{optimizer}->make_trace_wrapper(\&match_ref);
+        my $method = $optimizer->make_trace_wrapper(\&match_ref);
         $self->$method($start_rule_ref, {'+asr' => 0});
     } : $self->match_ref($start_rule_ref, {});
 
     $self->{input}->close;
 
-    if (not $match or $self->{position} < $self->{length}) {
+    if (not $match or $self->{position} < length ${$self->{buffer}}) {
         $self->throw_error("Parse document failed for some reason");
         return;  # In case $self->throw_on_error is off
     }
@@ -879,11 +879,10 @@ sub parse {
     if ($self->{receiver}->can("final")) {
         $self->{rule} = $start_rule_ref;
         $self->{parent} = {};
-        # XXX mismatch with ruby port
         $match = [ $self->{receiver}->final(@$match) ];
     }
 
-    return $match->[0];
+    $match->[0];
 }
 
 sub match_next {
@@ -921,15 +920,14 @@ sub match_next {
             if ($self->{position} = $position) > $self->{farthest};
     }
 
-    # YYY ($result ? $next->{'-skip'} ? [] : $match : 0) if $main::x;
-    return ($result ? $next->{'-skip'} ? [] : $match : 0);
+    ($result ? $next->{'-skip'} ? [] : $match : 0);
 }
 
 sub match_rule {
     my ($self, $position, $match) = (@_, []);
     $self->{position} = $position;
-    $self->{farthest} = $self->{position}
-        if $self->{position} > $self->{farthest};
+    $self->{farthest} = $position
+        if $position > $self->{farthest};
     $match = [ $match ] if @$match > 1;
     my ($ref, $parent) = @{$self}{'rule', 'parent'};
     my $rule = $self->{grammar}{tree}{$ref}
@@ -956,16 +954,18 @@ sub match_rgx {
     my $buffer = $self->{buffer};
 
     pos($$buffer) = $self->{position};
-
     $$buffer =~ /$regexp/g or return;
+
     $self->{position} = pos($$buffer);
 
-    no strict 'refs';
-    my $match = [ map $$_, 1..$#+ ];
-    $match = [ $match ] if $#+ > 1;
     $self->{farthest} = $self->{position}
         if $self->{position} > $self->{farthest};
-    return $match;
+
+    no strict 'refs';
+    my $captures = [ map $$_, 1..$#+ ];
+    $captures = [ $captures ] if $#+ > 1;
+
+    return $captures;
 }
 
 sub match_all {
@@ -1013,7 +1013,8 @@ sub trace {
     print STDERR ' ' x $self->{indent};
     $self->{indent}++ if $indent;
     my $snippet = substr(${$self->{buffer}}, $self->{position});
-    $snippet = substr($snippet, 0, 30) . "..." if length $snippet > 30;
+    $snippet = substr($snippet, 0, 30) . "..."
+        if length $snippet > 30;
     $snippet =~ s/\n/\\n/g;
     print STDERR sprintf("%-30s", $action) .
         ($indent ? " >$snippet<\n" : "\n");
@@ -1054,6 +1055,24 @@ Error parsing Pegex document:
   ${\ (' ' x (length($pretext) + 10) . '^')}
   position: $position ($real_pos pre-lookahead)
 ...
+}
+
+# TODO Move this to a Parser helper role/subclass
+sub line_column {
+    my ($self, $position) = @_;
+    $position ||= $self->{position};
+    my $buffer = $self->{buffer};
+    my $line = @{[substr($$buffer, 0, $position) =~ /(\n)/g]} + 1;
+    my $column = $position - rindex($$buffer, "\n", $position);
+    return [$line, $position];
+}
+
+# XXX Need to figure out what uses this. (sample.t)
+{
+    package
+Pegex::Constant;
+    our $Null = [];
+    our $Dummy = [];
 }
 }
 #use YAML::Pegex::Grammar 0.0.8; #INLINE
