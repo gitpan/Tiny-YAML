@@ -12,7 +12,6 @@ lib/Tiny/YAML.pod
 t/000-compile-modules.t
 t/load.t
 t/release-pod-syntax.t
-t/use_ok.t
 xt/xt/compare/roundtrip.t
 xt/xt/lib/Test.pm
 xt/yaml-tiny/01_api.t
