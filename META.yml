@@ -24,4 +24,4 @@ resources:
   bugtracker: https://github.com/ingydotnet/tiny-yaml-pm/issues
   homepage: https://github.com/ingydotnet/tiny-yaml-pm
   repository: https://github.com/ingydotnet/tiny-yaml-pm.git
-version: 0.0.11
+version: 0.0.12

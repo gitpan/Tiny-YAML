@@ -1,6 +1,6 @@
 use strict; use warnings;
 package Tiny::YAML;
-our $VERSION = '0.0.11';
+our $VERSION = '0.0.12';
 
 #####################################################################
 # The Tiny::YAML API.
