@@ -34,6 +34,7 @@
       },
       "runtime" : {
          "requires" : {
+            "YAML::Pegex" : "0",
             "perl" : "v5.8.1"
          }
       }
@@ -50,6 +51,6 @@
          "web" : "https://github.com/ingydotnet/tiny-yaml-pm"
       }
    },
-   "version" : "0.0.13"
+   "version" : "0.0.14"
 }
 
